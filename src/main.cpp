@@ -1,119 +1,75 @@
 #include <Arduino.h>
+/*************************************************************
+
+  This is a simple demo of sending and receiving some data.
+  Be sure to check out other examples!
+ *************************************************************/
+
+/* Fill-in information from Blynk Device Info here */
+#define BLYNK_TEMPLATE_ID           "TMPLNkJ1LwdT"
+#define BLYNK_TEMPLATE_NAME         "Quickstart Device"
+#define BLYNK_AUTH_TOKEN            "ZjlFnFMb_n3lW9SnwSZ8tnKuIVeQ243I"
+
+/* Comment this out to disable prints and save space */
+#define BLYNK_PRINT Serial
+
+
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
 
-// Settings
-#define BLYNK_TEMPLATE_ID "TMPLttGiTx4o"
-#define BLYNK_DEVICE_NAME "watering"
-#define BLYNK_AUTH_TOKEN "9jJxbAKyAmKwWc3LiwBJpLoZFPB90buK"
-#define BLYNK_PRINT Serial
-
-#define BLYNK_PUSH_DATA_INTERVAL 1000L
-
-#define VIRTUAL_MOISTURE_PIN V5
-
-#define WIFI_SSID "3bb-wlan_2.4GHz"
-#define WIFI_PASS "1111100000"
-
-#define MOISTURE_SENSOR_PIN 4
-#define SOLENOID_01_PIN 16
-#define SOLENOID_02_PIN 5
-
-#define TIMER_INTERVAL 1000
-
-#define DRY_LIMIT 700
-#define MOISTURE_LIMIT 400
+// Your WiFi credentials.
+// Set password to "" for open networks.
+char ssid[] = "3bb-wlan_2.4GHz";
+char pass[] = "1111100000";
 
 BlynkTimer timer;
 
-char ssid[] = WIFI_SSID;
-char pass[] = WIFI_PASS;
-
-int relayPin1 = 16;        // ตั้งขาสัญญาณ relay ที่ ขา D1
-int relayPin2 = 5;         // ตั้งขาสัญญาณ relay ที่ ขา D0
-int moistureSensorPin = 4; // ตั้งค่าสัญญาณ เซนเซอร์วัดความชื้นในดิ้น ที่ ขา D2
-
-bool flagMoisture;
-float moisturePercent = 0;
-
-unsigned long currentMsTime = 0;
-
-bool solenoid01Status;
-bool solenoid02Status;
-
-void setSolenoidValue(bool status)
+// This function is called every time the Virtual Pin 0 state changes
+BLYNK_WRITE(V0)
 {
-  digitalWrite(SOLENOID_01_PIN, status);
+  // Set incoming value from pin V0 to a variable
+  int value = param.asInt();
+
+  // Update state
+  Blynk.virtualWrite(V1, value);
 }
 
-void setMoisturePercent(int moistureRawValue)
+// This function is called every time the device is connected to the Blynk.Cloud
+BLYNK_CONNECTED()
 {
-  moisturePercent = 1024 / moistureRawValue;
+  // Change Web Link Button message to "Congratulations!"
+  Blynk.setProperty(V3, "offImageUrl", "https://static-image.nyc3.cdn.digitaloceanspaces.com/general/fte/congratulations.png");
+  Blynk.setProperty(V3, "onImageUrl",  "https://static-image.nyc3.cdn.digitaloceanspaces.com/general/fte/congratulations_pressed.png");
+  Blynk.setProperty(V3, "url", "https://docs.blynk.io/en/getting-started/what-do-i-need-to-blynk/how-quickstart-device-was-made");
 }
 
-void pushMoistureDataToBlynk()
+// This function sends Arduino's uptime every second to Virtual Pin 2.
+void myTimerEvent()
 {
-  // if (millis() - currentMsTime > TIMER_INTERVAL)
-  // {
-  //   int moistureRawValue = analogRead(MOISTURE_SENSOR_PIN);
-  //   setMoisturePercent(moistureRawValue);
-
-  //   Serial.println("Raw Moisture: " + String(moistureRawValue));
-  //   Serial.println("Percent Moisture: " + String(moisturePercent));
-
-  //   if (moistureRawValue > DRY_LIMIT && !flagMoisture) // ถ้า ค่า moistureVal หรือ ค่าความชื้น มากกว่า 700
-  //   {
-  //     digitalWrite(SOLENOID_01_PIN, LOW); // กำการทำงานของ Pin ที่ต้องสถานะ ลอจิก เป็น 0 LOW ซึ่งจะ "ทำงาน"
-  //     flagMoisture = true;
-  //   }
-
-  //   if (moistureRawValue < 400 && flagMoisture)
-  //   {                                      // และถ้า ไม่ตรงเงื่อนไง ของ if
-  //     digitalWrite(SOLENOID_01_PIN, HIGH); // กำการทำงานของ Pin ที่ต้องสถานะ ลอจิก เป็น 1 HIGH ซึ่งจะ "ไม่ทำงาน"
-  //     flagMoisture = false;
-  //   }
-
-  //   currentMsTime = millis();
-  // }
-
-  Blynk.virtualWrite(V1, true);
-  Blynk.virtualWrite(V2, true);
-  Blynk.virtualWrite(A0, 100);
+  // You can send any value at any time.
+  // Please don't send more that 10 values per second.
+  Blynk.virtualWrite(V2, millis() / 1000);
 }
 
 void setup()
-{ // การทำงานเพียงครั้งเดียว
+{
+  // Debug console
   Serial.begin(115200);
 
-  Serial.println("Program Start!");
-
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+  // You can also specify server:
+  //Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, "blynk.cloud", 80);
+  //Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, IPAddress(192,168,1,100), 8080);
 
-  pinMode(relayPin1, OUTPUT);        // การตั้งค่าสั่งให้ตัว relayPin1 เป็นสัญญาณแบบส่ง "ออก"
-  pinMode(relayPin2, OUTPUT);        // การตั้งค่าสั่งให้ตัว relayPin2 เป็นสัญญาณแบบส่ง "ออก"
-  pinMode(moistureSensorPin, INPUT); // การตั้งค่าสั่งให้ตัว moistureSensorPin เป็นสัญญาณแบบ "รับเข้ามา"
-
-  timer.setInterval(BLYNK_PUSH_DATA_INTERVAL, pushMoistureDataToBlynk);
+  // Setup a function to be called every second
+  timer.setInterval(1000L, myTimerEvent);
 }
 
 void loop()
-{ // การทำงานซ้ำๆ เลื่อยๆ
-
+{
   Blynk.run();
   timer.run();
+  // You can inject your own code or combine it with other sketches.
+  // Check other examples on how to communicate with Blynk. Remember
+  // to avoid delay() function!
 }
-
-// thanakorn
-
-// - ตั้งเวลาควบคุมการให้นํ้าพืช อัตโนมัติตามที่กำหนด
-//   - ค่าเกิน 700 ให้รดน้ำ 5 วิ
-//   - ค่าเกิน 700 ให้รดน้ำ จนกว่าจะเปียกเกิน ....
-//   - รดน้ำตามเวลาที่ตั้ง เช่น 11 โมง ให้รด 1 นาที
-
-// - ควบคุมการให้นํ้าพืชอัตโนมัติโดยการตรวจสอบค่าความชื้นที่เหมาะสม
-//   - แห้งไม่เกิน 700
-//   - เปียกไม่เกิน xxx
-
-// - รายงานค่าความชื้นในแปลงพืช
-
-// - รายงานสถานะการทำงานของปั๊มนํ้า
