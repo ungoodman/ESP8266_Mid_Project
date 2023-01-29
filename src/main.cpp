@@ -63,6 +63,8 @@ void setup()
 { // การทำงานเพียงครั้งเดียว
   Serial.begin(115200);
 
+  Serial.println("Program Start!");
+
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
 
   pinMode(relayPin1, OUTPUT);        // การตั้งค่าสั่งให้ตัว relayPin1 เป็นสัญญาณแบบส่ง "ออก"
