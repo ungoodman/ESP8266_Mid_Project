@@ -57,7 +57,7 @@ void pushToDashBoard()
 
   checkSoilMoisture(rawMoistureValue);
 
-  Blynk.virtualWrite(V4, 1024 / rawMoistureValue);
+  Blynk.virtualWrite(MOISTURE_GAUGE, 1024 / rawMoistureValue);
   Blynk.virtualWrite(SOLENOID_LED_1, solenoidStatus1);
   Blynk.virtualWrite(SOLENOID_LED_2, solenoidStatus2);
 }
@@ -67,9 +67,11 @@ void checkSoilMoisture(int rawMoistureValue)
   if (rawMoistureValue > DRY_LIMIT && !flagDryLimit)
   {
     solenoidStatus1 = LOW;
-    digitalWrite(SOLENOID_PIN_1, solenoidStatus1);
     solenoidStatus2 = LOW;
+
+    digitalWrite(SOLENOID_PIN_1, solenoidStatus1);
     digitalWrite(SOLENOID_PIN_2, solenoidStatus2);
+    
     flagDryLimit = true;
     return;
   }
@@ -77,9 +79,11 @@ void checkSoilMoisture(int rawMoistureValue)
   if (rawMoistureValue < MOISTURE_LIMIT && flagDryLimit)
   {
     solenoidStatus1 = HIGH;
-    digitalWrite(SOLENOID_PIN_1, solenoidStatus1);
     solenoidStatus2 = HIGH;
+    
+    digitalWrite(SOLENOID_PIN_1, solenoidStatus1);
     digitalWrite(SOLENOID_PIN_2, solenoidStatus2);
+    
     flagDryLimit = false;
     return;
   }
