@@ -68,6 +68,8 @@ void checkSoilMoisture(int rawMoistureValue)
   {
     solenoidStatus1 = LOW;
     digitalWrite(SOLENOID_PIN_1, solenoidStatus1);
+    solenoidStatus2 = LOW;
+    digitalWrite(SOLENOID_PIN_2, solenoidStatus2);
     flagDryLimit = true;
     return;
   }
@@ -76,6 +78,8 @@ void checkSoilMoisture(int rawMoistureValue)
   {
     solenoidStatus1 = HIGH;
     digitalWrite(SOLENOID_PIN_1, solenoidStatus1);
+    solenoidStatus2 = HIGH;
+    digitalWrite(SOLENOID_PIN_2, solenoidStatus2);
     flagDryLimit = false;
     return;
   }
