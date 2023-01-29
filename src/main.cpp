@@ -2,7 +2,6 @@
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
 
-
 // Settings
 #define BLYNK_TEMPLATE_ID "TMPLVDbaUwQu"
 #define BLYNK_DEVICE_NAME "ESP8266"
@@ -54,9 +53,32 @@ void setMoisturePercent(int moistureRawValue)
 
 void pushMoistureDataToBlynk()
 {
-  Blynk.virtualWrite(V1, solenoid01Status);
-  Blynk.virtualWrite(V2, solenoid01Status);
-  Blynk.virtualWrite(A0, moisturePercent);
+  // if (millis() - currentMsTime > TIMER_INTERVAL)
+  // {
+  //   int moistureRawValue = analogRead(MOISTURE_SENSOR_PIN);
+  //   setMoisturePercent(moistureRawValue);
+
+  //   Serial.println("Raw Moisture: " + String(moistureRawValue));
+  //   Serial.println("Percent Moisture: " + String(moisturePercent));
+
+  //   if (moistureRawValue > DRY_LIMIT && !flagMoisture) // ถ้า ค่า moistureVal หรือ ค่าความชื้น มากกว่า 700
+  //   {
+  //     digitalWrite(SOLENOID_01_PIN, LOW); // กำการทำงานของ Pin ที่ต้องสถานะ ลอจิก เป็น 0 LOW ซึ่งจะ "ทำงาน"
+  //     flagMoisture = true;
+  //   }
+
+  //   if (moistureRawValue < 400 && flagMoisture)
+  //   {                                      // และถ้า ไม่ตรงเงื่อนไง ของ if
+  //     digitalWrite(SOLENOID_01_PIN, HIGH); // กำการทำงานของ Pin ที่ต้องสถานะ ลอจิก เป็น 1 HIGH ซึ่งจะ "ไม่ทำงาน"
+  //     flagMoisture = false;
+  //   }
+
+  //   currentMsTime = millis();
+  // }
+
+  Blynk.virtualWrite(V1, true);
+  Blynk.virtualWrite(V2, true);
+  Blynk.virtualWrite(A0, 100);
 }
 
 void setup()
@@ -79,29 +101,6 @@ void loop()
 
   Blynk.run();
   timer.run();
-
-  if (millis() - currentMsTime > TIMER_INTERVAL)
-  {
-    int moistureRawValue = analogRead(MOISTURE_SENSOR_PIN);
-    setMoisturePercent(moistureRawValue);
-
-    Serial.println("Raw Moisture: " + String(moistureRawValue));
-    Serial.println("Percent Moisture: " + String(moisturePercent));
-
-    if (moistureRawValue > DRY_LIMIT && !flagMoisture) // ถ้า ค่า moistureVal หรือ ค่าความชื้น มากกว่า 700
-    {
-      digitalWrite(SOLENOID_01_PIN, LOW); // กำการทำงานของ Pin ที่ต้องสถานะ ลอจิก เป็น 0 LOW ซึ่งจะ "ทำงาน"
-      flagMoisture = true;
-    }
-
-    if (moistureRawValue < 400 && flagMoisture)
-    {                                      // และถ้า ไม่ตรงเงื่อนไง ของ if
-      digitalWrite(SOLENOID_01_PIN, HIGH); // กำการทำงานของ Pin ที่ต้องสถานะ ลอจิก เป็น 1 HIGH ซึ่งจะ "ไม่ทำงาน"
-      flagMoisture = false;
-    }
-
-    currentMsTime = millis();
-  }
 }
 
 // thanakorn
