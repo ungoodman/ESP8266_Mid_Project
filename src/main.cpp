@@ -3,17 +3,17 @@
 #include <BlynkSimpleEsp8266.h>
 
 // Settings
-#define BLYNK_TEMPLATE_ID "TMPLVDbaUwQu"
-#define BLYNK_DEVICE_NAME "ESP8266"
-#define BLYNK_AUTH_TOKEN "bf-lKokYljeG2vgtxaxU5pQLluIvNcjE"
+#define BLYNK_TEMPLATE_ID "TMPLttGiTx4o"
+#define BLYNK_DEVICE_NAME "watering"
+#define BLYNK_AUTH_TOKEN "9jJxbAKyAmKwWc3LiwBJpLoZFPB90buK"
 #define BLYNK_PRINT Serial
 
 #define BLYNK_PUSH_DATA_INTERVAL 1000L
 
 #define VIRTUAL_MOISTURE_PIN V5
 
-#define WIFI_SSID ""
-#define WIFI_PASS ""
+#define WIFI_SSID "3bb-wlan_2.4GHz"
+#define WIFI_PASS "1111100000"
 
 #define MOISTURE_SENSOR_PIN 4
 #define SOLENOID_01_PIN 16
