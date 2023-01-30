@@ -49,7 +49,7 @@ void myTimerEvent()
   // Please don't send more that 10 values per second.
   int analog = analogRead(A0);
   float percent = (1 - (analogRead(A0) / 1024)) * 100;
-  Serial.println("Raw: " + String(analog)  + " Percent: " + String(percent));
+  Serial.println("Raw: " + String(analog)  + " Percent: " + String(percent) + " -> " + String(analog/1024));
   Blynk.virtualWrite(V4, percent);
 }
 
