@@ -25,11 +25,9 @@
 #define DRY_LIMIT 700
 
 // Wifi settings
-#define WIFI_SSID "3bb-wlan_2.4GHz"
-#define WIFI_PASS "1111100000"
 
-char ssid[] = WIFI_SSID;
-char pass[] = WIFI_PASS;
+char ssid[] = "3bb-wlan_2.4GHz";
+char pass[] = "1111100000";
 
 bool flagDryLimit = false;
 
