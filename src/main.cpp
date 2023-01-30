@@ -51,17 +51,6 @@ BLYNK_CONNECTED()
   Blynk.setProperty(V3, "url", "https://docs.blynk.io/en/getting-started/what-do-i-need-to-blynk/how-quickstart-device-was-made");
 }
 
-void pushToDashBoard()
-{
-  int rawMoistureValue = analogRead(MOISTURE_SENSOR_PIN);
-
-  checkSoilMoisture(rawMoistureValue);
-
-  Blynk.virtualWrite(MOISTURE_GAUGE, 1024 / rawMoistureValue);
-  Blynk.virtualWrite(SOLENOID_LED_1, solenoidStatus1);
-  Blynk.virtualWrite(SOLENOID_LED_2, solenoidStatus2);
-}
-
 void checkSoilMoisture(int rawMoistureValue)
 {
   if (rawMoistureValue > DRY_LIMIT && !flagDryLimit)
@@ -87,6 +76,17 @@ void checkSoilMoisture(int rawMoistureValue)
     flagDryLimit = false;
     return;
   }
+}
+
+void pushToDashBoard()
+{
+  int rawMoistureValue = analogRead(MOISTURE_SENSOR_PIN);
+
+  checkSoilMoisture(rawMoistureValue);
+
+  Blynk.virtualWrite(MOISTURE_GAUGE, 1024 / rawMoistureValue);
+  Blynk.virtualWrite(SOLENOID_LED_1, solenoidStatus1);
+  Blynk.virtualWrite(SOLENOID_LED_2, solenoidStatus2);
 }
 
 void setup()
