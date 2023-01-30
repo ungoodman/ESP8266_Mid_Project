@@ -90,12 +90,16 @@ void myTimerEvent()
   float percent = (102 - (analog / 10));
   checkSoilMoisture(analog);
   Serial.println("Raw: " + String(analog)  + " Percent: " + String(percent));
-  Blynk.virtualWrite(V5, percent);
-  Blynk.virtualWrite(V6, percent);
+  Blynk.virtualWrite(V4, percent);
+  Blynk.virtualWrite(V5, solenoidStatus1);
+  Blynk.virtualWrite(V6, solenoidStatus2);
 }
 
 void setup()
 {
+  pinMode(A0, OUTPUT);
+  pinMode(16, INPUT);
+  pinMode(5, INPUT);
   // Debug console
   Serial.begin(115200);
 
