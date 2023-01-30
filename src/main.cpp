@@ -91,8 +91,8 @@ void myTimerEvent()
   checkSoilMoisture(analog);
   Serial.println("Raw: " + String(analog)  + " Percent: " + String(percent));
   Blynk.virtualWrite(V4, percent);
-  Blynk.virtualWrite(V5, solenoidStatus1);
-  Blynk.virtualWrite(V6, solenoidStatus2);
+  Blynk.virtualWrite(V5, !solenoidStatus1);
+  Blynk.virtualWrite(V6, !solenoidStatus2);
 }
 
 void setup()
@@ -104,11 +104,6 @@ void setup()
   Serial.begin(115200);
 
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
-  // You can also specify server:
-  // Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, "blynk.cloud", 80);
-  // Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, IPAddress(192,168,1,100), 8080);
-
-  // Setup a function to be called every second
   timer.setInterval(1000L, myTimerEvent);
 }
 
@@ -116,7 +111,4 @@ void loop()
 {
   Blynk.run();
   timer.run();
-  // You can inject your own code or combine it with other sketches.
-  // Check other examples on how to communicate with Blynk. Remember
-  // to avoid delay() function!
 }
