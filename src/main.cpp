@@ -1,109 +1,74 @@
 #include <Arduino.h>
-#include <ESP8266WiFi.h>
-#include <BlynkSimpleEsp8266.h>
+/*************************************************************
 
-// Blynk settings
+  This is a simple demo of sending and receiving some data.
+  Be sure to check out other examples!
+ *************************************************************/
+
+/* Fill-in information from Blynk Device Info here */
 #define BLYNK_TEMPLATE_ID "TMPLNkJ1LwdT"
 #define BLYNK_TEMPLATE_NAME "Quickstart Device"
 #define BLYNK_AUTH_TOKEN "ZjlFnFMb_n3lW9SnwSZ8tnKuIVeQ243I"
+
+/* Comment this out to disable prints and save space */
 #define BLYNK_PRINT Serial
-#define Blynk_TIMER_INTERVAL 1000L
 
-// Blynk pin settings
-#define SOLENOID_LED_1 V1
-#define SOLENOID_LED_2 V2
-#define MOISTURE_GAUGE V4
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
 
-// Hardware pin settings
-#define SOLENOID_PIN_1 16
-#define SOLENOID_PIN_2 5
-#define MOISTURE_SENSOR_PIN A0
-#define SERIAL_SPEED 115200
-
-// Moisture settings
-#define MOISTURE_LIMIT 400
-#define DRY_LIMIT 700
-
-// Wifi settings
-
+// Your WiFi credentials.
+// Set password to "" for open networks.
 char ssid[] = "3bb-wlan_2.4GHz";
 char pass[] = "1111100000";
 
-bool flagDryLimit = false;
-
-#define ACTIVE_LOW
-#ifdef ACTIVE_LOW
-bool solenoidStatus1 = HIGH;
-bool solenoidStatus2 = HIGH;
-#else
-bool solenoidStatus1 = LOW;
-bool solenoidStatus2 = LOW;
-#endif
-
 BlynkTimer timer;
 
+// This function is called every time the Virtual Pin 0 state changes
+BLYNK_WRITE(V0)
+{
+  // Set incoming value from pin V0 to a variable
+  int value = param.asInt();
+
+  // Update state
+  Blynk.virtualWrite(V1, value);
+}
+
+// This function is called every time the device is connected to the Blynk.Cloud
 BLYNK_CONNECTED()
 {
+  // Change Web Link Button message to "Congratulations!"
   Blynk.setProperty(V3, "offImageUrl", "https://static-image.nyc3.cdn.digitaloceanspaces.com/general/fte/congratulations.png");
   Blynk.setProperty(V3, "onImageUrl", "https://static-image.nyc3.cdn.digitaloceanspaces.com/general/fte/congratulations_pressed.png");
   Blynk.setProperty(V3, "url", "https://docs.blynk.io/en/getting-started/what-do-i-need-to-blynk/how-quickstart-device-was-made");
 }
 
-void checkSoilMoisture(int rawMoistureValue)
+// This function sends Arduino's uptime every second to Virtual Pin 2.
+void myTimerEvent()
 {
-  if (rawMoistureValue > DRY_LIMIT && !flagDryLimit)
-  {
-    solenoidStatus1 = LOW;
-    solenoidStatus2 = LOW;
-
-    digitalWrite(SOLENOID_PIN_1, solenoidStatus1);
-    digitalWrite(SOLENOID_PIN_2, solenoidStatus2);
-    
-    flagDryLimit = true;
-    return;
-  }
-
-  if (rawMoistureValue < MOISTURE_LIMIT && flagDryLimit)
-  {
-    solenoidStatus1 = HIGH;
-    solenoidStatus2 = HIGH;
-    
-    digitalWrite(SOLENOID_PIN_1, solenoidStatus1);
-    digitalWrite(SOLENOID_PIN_2, solenoidStatus2);
-    
-    flagDryLimit = false;
-    return;
-  }
-}
-
-void pushToDashBoard()
-{
-  int rawMoistureValue = analogRead(MOISTURE_SENSOR_PIN);
-
-  checkSoilMoisture(rawMoistureValue);
-
-  Blynk.virtualWrite(MOISTURE_GAUGE, 1024 / rawMoistureValue);
-  Blynk.virtualWrite(SOLENOID_LED_1, solenoidStatus1);
-  Blynk.virtualWrite(SOLENOID_LED_2, solenoidStatus2);
+  // You can send any value at any time.
+  // Please don't send more that 10 values per second.
+  Blynk.virtualWrite(V4, analogRead(4));
 }
 
 void setup()
 {
-  pinMode(SOLENOID_PIN_1, OUTPUT);
-  pinMode(SOLENOID_PIN_2, OUTPUT);
-  pinMode(MOISTURE_SENSOR_PIN, INPUT);
-
-  digitalWrite(SOLENOID_PIN_1, solenoidStatus1);
-  digitalWrite(SOLENOID_PIN_2, solenoidStatus2);
-
-  Serial.begin(SERIAL_SPEED);
+  // Debug console
+  Serial.begin(115200);
 
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
-  timer.setInterval(Blynk_TIMER_INTERVAL, pushToDashBoard);
+  // You can also specify server:
+  // Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, "blynk.cloud", 80);
+  // Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, IPAddress(192,168,1,100), 8080);
+
+  // Setup a function to be called every second
+  timer.setInterval(1000L, myTimerEvent);
 }
 
 void loop()
 {
   Blynk.run();
   timer.run();
+  // You can inject your own code or combine it with other sketches.
+  // Check other examples on how to communicate with Blynk. Remember
+  // to avoid delay() function!
 }
