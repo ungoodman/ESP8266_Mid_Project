@@ -47,7 +47,8 @@ void myTimerEvent()
 {
   // You can send any value at any time.
   // Please don't send more that 10 values per second.
-  Blynk.virtualWrite(V4, 1024 / analogRead(4));
+  int percent = (1024 - (analogRead(A0) / 1024)) * 100;
+  Blynk.virtualWrite(V4, percent);
 }
 
 void setup()
