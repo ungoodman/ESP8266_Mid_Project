@@ -34,6 +34,9 @@ bool solenoidStatus2 = LOW;
 
 BlynkTimer timer;
 
+WidgetLED sor1(V5);
+WidgetLED sor2(V6);
+
 // This function is called every time the Virtual Pin 0 state changes
 BLYNK_WRITE(V0)
 {
@@ -55,9 +58,9 @@ BLYNK_CONNECTED()
 
 void checkSoilMoisture(int rawMoistureValue)
 {
-  Serial.println("Flag Dry: " + String(flagDryLimit));
-  Serial.print("Sole 1: " + String(!solenoidStatus1));
-  Serial.println(" Sole 2: " + String(!solenoidStatus2));
+  // Serial.println("Flag Dry: " + String(flagDryLimit));
+  // Serial.print("Sole 1: " + String(!solenoidStatus1));
+  // Serial.println(" Sole 2: " + String(!solenoidStatus2));
   if (rawMoistureValue > 700 && flagDryLimit == false)
   {
     solenoidStatus1 = LOW;
@@ -65,7 +68,10 @@ void checkSoilMoisture(int rawMoistureValue)
 
     digitalWrite(16, solenoidStatus1);
     digitalWrite(5, solenoidStatus2);
-    
+
+    sor1.on();
+    sor2.on();
+
     flagDryLimit = true;
     return;
   }
@@ -74,15 +80,17 @@ void checkSoilMoisture(int rawMoistureValue)
   {
     solenoidStatus1 = HIGH;
     solenoidStatus2 = HIGH;
-    
+
     digitalWrite(16, solenoidStatus1);
     digitalWrite(5, solenoidStatus2);
-    
+
+    sor1.off();
+    sor2.off();
+
     flagDryLimit = false;
     return;
   }
 }
-
 
 // This function sends Arduino's uptime every second to Virtual Pin 2.
 void myTimerEvent()
@@ -92,10 +100,8 @@ void myTimerEvent()
   int analog = analogRead(A0);
   float percent = (102 - (analog / 10));
   checkSoilMoisture(analog);
-  Serial.println("Raw: " + String(analog)  + " Percent: " + String(percent));
+  Serial.println("Raw: " + String(analog) + " Percent: " + String(percent));
   Blynk.virtualWrite(V4, percent);
-  Blynk.virtualWrite(V5, !solenoidStatus1);
-  Blynk.virtualWrite(V6, !solenoidStatus2);
 }
 
 void setup()
