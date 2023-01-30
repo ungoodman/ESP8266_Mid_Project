@@ -55,7 +55,10 @@ BLYNK_CONNECTED()
 
 void checkSoilMoisture(int rawMoistureValue)
 {
-  if (rawMoistureValue > 700 && !flagDryLimit)
+  Serial.println("Flag Dry: " + String(flagDryLimit));
+  Serial.print("Sole 1: " + String(!solenoidStatus1));
+  Serial.println(" Sole 2: " + String(!solenoidStatus2));
+  if (rawMoistureValue > 700 && flagDryLimit == false)
   {
     solenoidStatus1 = LOW;
     solenoidStatus2 = LOW;
@@ -67,7 +70,7 @@ void checkSoilMoisture(int rawMoistureValue)
     return;
   }
 
-  if (rawMoistureValue < 400 && flagDryLimit)
+  if (rawMoistureValue < 400 && flagDryLimit == true)
   {
     solenoidStatus1 = HIGH;
     solenoidStatus2 = HIGH;
