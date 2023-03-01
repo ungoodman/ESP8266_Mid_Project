@@ -38,12 +38,18 @@ void automaticMode()
 {
   if (moistureSensor.dryLimitReach())
   {
+    virtualSolenoidLedZoneA.on();
     solenoidZoneA.on();
+    virtualSolenoidLedZoneB.on();
+    solenoidZoneB.on();
     return;
   }
 
   if (moistureSensor.wetLimitReach())
+    virtualSolenoidLedZoneA.off();
     solenoidZoneA.off();
+    virtualSolenoidLedZoneB.off();
+    solenoidZoneB.off();
 }
 
 void mainEvent()
