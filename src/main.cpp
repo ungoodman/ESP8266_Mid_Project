@@ -46,10 +46,12 @@ void automaticMode()
   }
 
   if (moistureSensor.wetLimitReach())
+  {
     virtualSolenoidLedZoneA.off();
     solenoidZoneA.off();
     virtualSolenoidLedZoneB.off();
     solenoidZoneB.off();
+  }
 }
 
 void mainEvent()
@@ -57,7 +59,8 @@ void mainEvent()
   float moisturePercent = moistureSensor.getPercent();
   Blynk.virtualWrite(VIRTUAL_MOISTURE_GAUGE, moisturePercent);
 
-  if (isAutomatic) automaticMode();
+  if (isAutomatic)
+    automaticMode();
 }
 
 void setup()
