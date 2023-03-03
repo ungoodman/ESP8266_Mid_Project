@@ -12,13 +12,19 @@ private:
     void setup();
 
 public:
-    Solenoid(int solenoidPin, int ledPin, bool activeMode = HIGH);
+    Solenoid(int solenoidPin, int ledPin);
+    Solenoid(int solenoidPin, int ledPin, bool activeMode);
     // ~Solenoid();
     void on();
     void off();
 };
 
-Solenoid::Solenoid(int solenoidPin, int ledPin, bool activeMode = HIGH)
+Solenoid::Solenoid(int solenoidPin, int ledPin)
+{
+    Solenoid(solenoidPin, ledPin, HIGH);
+}
+
+Solenoid::Solenoid(int solenoidPin, int ledPin, bool activeMode)
 {
     _solenoidPin = solenoidPin;
     _ledPin = ledPin;
