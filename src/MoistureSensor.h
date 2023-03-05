@@ -22,6 +22,7 @@ private:
 
     void setup();
     int getValue();
+    bool limitReachCheck(bool condition);
 public:
     MoistureSensor(int pin, int maxPercentLimit, int minPercentLimit);
     // ~MoistureSensor();
@@ -50,15 +51,11 @@ float MoistureSensor::getPercent() {
 }
 
 bool MoistureSensor::dryLimitReach() {
-    if (getPercent() <= _minPercentLimit && _isDry != true)
-        _isDry = true;
-    return _isDry;
+    return limitReachCheck(getPercent() <= _minPercentLimit && !_isDry);
 }
 
 bool MoistureSensor::wetLimitReach() {
-    if (getPercent() >= _maxPercentLimit && _isDry == true)
-        _isDry = false;
-    return !_isDry;
+    return limitReachCheck(getPercent() >= _maxPercentLimit && _isDry);
 }
 
 // Private
@@ -68,4 +65,12 @@ void MoistureSensor::setup() {
 
 int MoistureSensor::getValue() {
     return analogRead(_pin);
+}
+
+bool MoistureSensor::limitReachCheck(bool condition) {
+    if (condition){
+        _isDry = !_isDry;
+        return true;
+    }
+    return false;
 }
