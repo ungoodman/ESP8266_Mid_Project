@@ -3,6 +3,13 @@
 #define DEFAULT_MAX_MOISTURE_PERCENT 70
 #define DEFAULT_MIN_MOISTURE_PERCENT 40
 
+// #define ESP8266_VERSION
+#ifndef ESP8266_VERSION
+#define ANALOG_MAX_BIT 4096
+#else 
+#define ANALOG_MAX_BIT 1024
+#endif
+
 class MoistureSensor
 {
 private:
@@ -39,19 +46,19 @@ MoistureSensor::MoistureSensor(int pin, int maxPercentLimit = DEFAULT_MAX_MOISTU
 
 // Public
 float MoistureSensor::getPercent() {
-    return (1 - (getValue() / 1024)) * 100;
+    return ((ANALOG_MAX_BIT - getValue()) * 100) / ANALOG_MAX_BIT;
 }
 
 bool MoistureSensor::dryLimitReach() {
-    if (_minPercentLimit > getPercent() && !_isDry)
+    if (getPercent() <= _minPercentLimit && _isDry != true)
         _isDry = true;
     return _isDry;
 }
 
 bool MoistureSensor::wetLimitReach() {
-    if (_maxPercentLimit < getPercent() && _isDry)
+    if (getPercent() >= _maxPercentLimit && _isDry == true)
         _isDry = false;
-    return _isDry;
+    return !_isDry;
 }
 
 // Private
