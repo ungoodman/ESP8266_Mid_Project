@@ -1,7 +1,8 @@
 #include <Arduino.h>
 #include <main.h>
 
-void setSolenoid(WidgetLED blynkLED, Solenoid solenoid, bool signal) {
+void setSolenoid(WidgetLED blynkLED, Solenoid solenoid, bool signal)
+{
   if (signal)
   {
     blynkLED.on();
@@ -14,7 +15,8 @@ void setSolenoid(WidgetLED blynkLED, Solenoid solenoid, bool signal) {
   }
 }
 
-void manualMode(int blynkSignal, WidgetLED blynkLED, Solenoid solenoid) {
+void manualMode(int blynkSignal, WidgetLED blynkLED, Solenoid solenoid)
+{
   if (isAutomatic)
     return;
 
@@ -48,7 +50,12 @@ BLYNK_WORK_MODE_BTN
     setSolenoid(blynkSolenoidLedZoneA, solenoidZoneA, LOW);
     setSolenoid(blynkSolenoidLedZoneB, solenoidZoneB, LOW);
   }
-  else digitalWrite(WORKMODE_LED_PIN, HIGH);
+  else
+  {
+    digitalWrite(WORKMODE_LED_PIN, HIGH);
+    setSolenoid(blynkSolenoidLedZoneA, solenoidZoneA, LOW);
+    setSolenoid(blynkSolenoidLedZoneB, solenoidZoneB, LOW);
+  }
 }
 
 BLYNK_SOLENOID_ZONE_A_BTN

@@ -32,7 +32,7 @@ Solenoid solenoidZoneA(SOLENOID_PIN_ZONE_A, LOW);
 Solenoid solenoidZoneB(SOLENOID_PIN_ZONE_B, LOW);
 #endif
 
-MoistureSensor moistureSensor(MOISTURE_SENSOR_PIN);
+MoistureSensor moistureSensor(MOISTURE_SENSOR_PIN, 70, 40);
 
 WidgetLED blynkSolenoidLedZoneA(V1);
 WidgetLED blynkSolenoidLedZoneB(V2);
