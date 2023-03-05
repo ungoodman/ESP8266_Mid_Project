@@ -1,29 +1,6 @@
 #include <Arduino.h>
 #include <main.h>
 
-BLYNK_WORK_MODE_BTN
-{
-  isAutomatic = !param.asInt();
-
-  if (!isAutomatic)
-  {
-    digitalWrite(WORKMODE_LED_PIN, LOW);
-    setSolenoid(blynkSolenoidLedZoneA, solenoidZoneA, LOW);
-    setSolenoid(blynkSolenoidLedZoneB, solenoidZoneB, LOW);
-  }
-  else digitalWrite(WORKMODE_LED_PIN, HIGH);
-}
-
-BLYNK_SOLENOID_ZONE_A_BTN
-{
-  manualMode(param.asInt(), blynkSolenoidLedZoneA, solenoidZoneA);
-}
-
-BLYNK_SOLENOID_ZONE_B_BTN
-{
-  manualMode(param.asInt(), blynkSolenoidLedZoneB, solenoidZoneB);
-}
-
 void setSolenoid(WidgetLED blynkLED, Solenoid solenoid, bool signal) {
   if (signal)
   {
@@ -59,6 +36,29 @@ void automaticMode()
     setSolenoid(blynkSolenoidLedZoneA, solenoidZoneA, LOW);
     setSolenoid(blynkSolenoidLedZoneB, solenoidZoneB, LOW);
   }
+}
+
+BLYNK_WORK_MODE_BTN
+{
+  isAutomatic = !param.asInt();
+
+  if (!isAutomatic)
+  {
+    digitalWrite(WORKMODE_LED_PIN, LOW);
+    setSolenoid(blynkSolenoidLedZoneA, solenoidZoneA, LOW);
+    setSolenoid(blynkSolenoidLedZoneB, solenoidZoneB, LOW);
+  }
+  else digitalWrite(WORKMODE_LED_PIN, HIGH);
+}
+
+BLYNK_SOLENOID_ZONE_A_BTN
+{
+  manualMode(param.asInt(), blynkSolenoidLedZoneA, solenoidZoneA);
+}
+
+BLYNK_SOLENOID_ZONE_B_BTN
+{
+  manualMode(param.asInt(), blynkSolenoidLedZoneB, solenoidZoneB);
 }
 
 void timerEvent()
