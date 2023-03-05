@@ -27,7 +27,7 @@ public:
     MoistureSensor(int pin, int maxPercentLimit, int minPercentLimit);
     // ~MoistureSensor();
     
-    float getPercent();
+    int getPercent();
     bool wetLimitReach();
     bool dryLimitReach();
 };
@@ -46,8 +46,10 @@ MoistureSensor::MoistureSensor(int pin, int maxPercentLimit = DEFAULT_MAX_MOISTU
 // }
 
 // Public
-float MoistureSensor::getPercent() {
-    return ((ANALOG_MAX_BIT - getValue()) * 100) / ANALOG_MAX_BIT;
+int MoistureSensor::getPercent() {
+    int percent = ((ANALOG_MAX_BIT - getValue()) * 100) / ANALOG_MAX_BIT;
+    Serial.println("Percent: " + String(percent));
+    return percent;
 }
 
 bool MoistureSensor::dryLimitReach() {
